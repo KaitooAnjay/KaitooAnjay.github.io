@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kaetohh Portfolio</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+      background: black;
+    }
+
+    /* Background GIF */
+    .bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: url('YOUR_GIF_URL_HERE') center/cover no-repeat;
+      filter: brightness(0.4);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 60px 20px;
+    }
+
+    h1 {
+      font-size: 48px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    p.subtitle {
+      opacity: 0.7;
+      margin-bottom: 40px;
+    }
+
+    /* Video grid */
+    .videos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .video {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s;
+    }
+
+    .video:hover {
+      transform: translateY(-5px);
+    }
+
+    iframe {
+      width: 100%;
+      height: 200px;
+      border: none;
+    }
+
+    /* Disclaimer */
+    .disclaimer {
+      margin-top: 60px;
+      font-size: 14px;
+      opacity: 0.6;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 20px;
+    }
+
+    /* Mouse glow */
+    .cursor {
+      position: fixed;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 999;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="bg"></div>
+  <div class="cursor" id="cursor"></div>
+
+  <div class="container">
+    <h1>Kaetohh</h1>
+    <p class="subtitle">Lua Developer — 6 Years Experience</p>
+
+    <div class="videos">
+      <!-- Replace with your video embeds -->
+      <div class="video">
+        <iframe src="https://streamable.com/e/VIDEO1"></iframe>
+      </div>
+
+      <div class="video">
+        <iframe src="https://streamable.com/e/VIDEO2"></iframe>
+      </div>
+
+      <div class="video">
+        <iframe src="https://streamable.com/e/VIDEO3"></iframe>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      This website was generated with the assistance of AI. However, all showcased projects and code are originally created by me.
+    </div>
+  </div>
+
+  <script>
+    const cursor = document.getElementById('cursor');
+
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+
+    // Performance optimization: pause animations when tab inactive
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        document.body.style.animationPlayState = 'paused';
+      } else {
+        document.body.style.animationPlayState = 'running';
+      }
+    });
+  </script>
+</body>
+</html>
