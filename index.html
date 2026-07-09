@@ -1,241 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kaetohh Portfolio</title>
-
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: Arial, sans-serif;
-      color: #fff;
-      background: black;
-      overflow-x: hidden;
-    }
-
-    .bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      background: url('YOUR_GIF_URL_HERE') center/cover no-repeat;
-      filter: brightness(0.4);
-      animation: bgZoom 20s ease-in-out infinite alternate;
-    }
-
-    @keyframes bgZoom {
-      from { transform: scale(1); }
-      to { transform: scale(1.05); }
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 60px 20px;
-      animation: fadeIn 1s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    h1 { font-size: 48px; margin-bottom: 10px; }
-    .subtitle { opacity: 0.7; margin-bottom: 40px; }
-
-    .videos {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-    }
-
-    .video {
-      background: rgba(255,255,255,0.05);
-      border-radius: 12px;
-      overflow: hidden;
-      cursor: pointer;
-      transform: translateY(20px);
-      opacity: 0;
-      transition: transform 0.4s ease, opacity 0.4s ease;
-    }
-
-    .video.visible {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    .video:hover {
-      transform: translateY(-8px) scale(1.02);
-    }
-
-    iframe { width: 100%; height: 200px; border: none; }
-
-    /* Overlay */
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.9);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-    }
-
-    .overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .overlay iframe {
-      width: 90%;
-      max-width: 900px;
-      height: 500px;
-      transform: scale(0.9);
-      transition: transform 0.4s ease;
-    }
-
-    .overlay.active iframe {
-      transform: scale(1);
-    }
-
-    .overlay .title {
-      margin-top: 20px;
-      font-size: 24px;
-      font-weight: bold;
-      animation: fadeIn 0.6s ease;
-    }
-
-    .overlay .desc {
-      margin-top: 10px;
-      opacity: 0.7;
-      max-width: 800px;
-      text-align: center;
-      animation: fadeIn 0.8s ease;
-    }
-
-    .close {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      font-size: 30px;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-
-    .close:hover { transform: rotate(90deg); }
-
-    .disclaimer {
-      margin-top: 60px;
-      font-size: 14px;
-      opacity: 0.6;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      padding-top: 20px;
-      animation: fadeIn 1.2s ease;
-    }
-
-    .cursor {
-      position: fixed;
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 60%);
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      z-index: 999;
-      transition: transform 0.1s linear;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      * { animation: none !important; transition: none !important; }
-    }
-
-  </style>
-</head>
-
-<body>
-  <div class="bg"></div>
-  <div class="cursor" id="cursor"></div>
-
-  <div class="container">
-    <h1>Kaetohh</h1>
-    <p class="subtitle">Lua Developer — 6 Years Experience</p>
-
-    <div class="videos">
-      <div class="video" onclick="openVideo('https://streamable.com/e/i6br7s?autoplay=1&muted=1','Combat System: M1, Skills, Awakening, Dash', desc1)">
-        <iframe src="https://streamable.com/e/i6br7s?autoplay=1&muted=1"></iframe>
-      </div>
-    </div>
-
-    <div class="disclaimer">
-      This website was generated with the assistance of AI. However, all showcased projects and code are originally created by me.
-    </div>
-  </div>
-
-  <div class="overlay" id="overlay">
-    <div class="close" onclick="closeVideo()">&times;</div>
-    <iframe id="overlayVideo"></iframe>
-    <div class="title" id="overlayTitle"></div>
-    <div class="desc" id="overlayDesc"></div>
-  </div>
-
-  <script>
-    const cursor = document.getElementById('cursor');
-
-    document.addEventListener('mousemove', e => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
-    });
-
-    const desc1 = `This combat system showcases a full implementation of M1 combos, skill execution, awakening mechanics, and dash movement — all scripted entirely by me.
-
-While the UI, visual effects (VFX), animations, and map assets were not created by me, every gameplay system and underlying logic was developed from scratch using Lua.
-
-The footage shown here is a clip from an in-progress project currently titled "Untitled Touhou Project", where I am focusing on building responsive, scalable, and polished combat systems.`;
-
-    function openVideo(src, title, desc) {
-      const overlay = document.getElementById('overlay');
-      document.getElementById('overlayVideo').src = src;
-      document.getElementById('overlayTitle').innerText = title;
-      document.getElementById('overlayDesc').innerText = desc;
-      overlay.classList.add('active');
-    }
-
-    function closeVideo() {
-      const overlay = document.getElementById('overlay');
-      document.getElementById('overlayVideo').src = '';
-      overlay.classList.remove('active');
-    }
-
-    // Scroll reveal animation
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaito | Portfolio</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
         }
-      });
-    });
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #bb86fc;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        .project-card {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 5px;
+        }
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #888;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Yo, I'm Kaito ✌️</h1>
+            <p>I've been programming and breaking things for about 5 years. Mostly doing Luau scripting and building stuff in Roblox. Check out my work below.</p>
+        </header>
 
-    document.querySelectorAll('.video').forEach(el => observer.observe(el));
+        <section id="projects">
+            <h2>My Work</h2>
+            
+            <div class="project-card">
+                <h3>Project Title (Ganti Nama Project Lu)</h3>
+                <p>Penjelasan dikit soal project ini. Bikin sistem apa kek, NeuraFlow kek, atau simulasi apaan gitu, tulis di sini.</p>
+                
+                <!-- INI TEMPAT VIDEO DRIVE LU -->
+                <div class="video-container">
+                    <iframe src="https://drive.google.com/file/d/TARUH_ID_VIDEO_LU_DISINI/preview" allow="autoplay"></iframe>
+                </div>
+            </div>
+        </section>
 
-    // Performance optimization
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        document.body.style.animationPlayState = 'paused';
-      } else {
-        document.body.style.animationPlayState = 'running';
-      }
-    });
-  </script>
+        <footer>
+            <p>⚠️ <strong>Disclaimer:</strong> This portfolio webpage was entirely generated by AI because I was too lazy to write HTML.</p>
+        </footer>
+    </div>
 </body>
 </html>
