@@ -11,7 +11,8 @@
             --primary: #0f3460;
             --accent: #e94560;
             --text: #f5f5f5;
-            --border: rgba(233, 69, 96, 0.3);
+            --correct: #2ee59d;
+            --wrong: #ff4757;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -26,28 +27,26 @@
         .container {
             background-color: var(--card-bg);
             padding: 30px;
-            border-radius: 12px;
+            border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             text-align: center;
             width: 90%;
-            max-width: 520px;
+            max-width: 550px;
             box-sizing: border-box;
-            border: 1px solid var(--border);
             position: relative;
         }
         .header {
             display: flex;
             justify-content: space-between;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             margin-bottom: 20px;
             font-weight: bold;
-            color: var(--text);
         }
         .timer-bar {
             width: 100%;
-            height: 8px;
-            background-color: #0f3460;
-            border-radius: 4px;
+            height: 10px;
+            background-color: #333;
+            border-radius: 5px;
             margin-bottom: 20px;
             overflow: hidden;
         }
@@ -58,11 +57,9 @@
             transition: width 0.1s linear;
         }
         .character-display {
-            font-size: 7rem;
-            margin: 10px 0 20px 0;
+            font-size: 8rem;
+            margin: 20px 0;
             line-height: 1;
-            color: #ffffff;
-            text-shadow: 0 0 15px rgba(233, 69, 96, 0.4);
         }
         .options-grid {
             display: grid;
@@ -71,69 +68,89 @@
         }
         .top-btns {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-            z-index: 10;
+            top: 15px;
+            right: 15px;
         }
         .settings-btn {
             background: var(--primary);
-            border: 1px solid var(--border);
+            border: none;
             color: var(--text);
-            padding: 6px 12px;
-            font-size: 0.85rem;
+            padding: 8px 12px;
+            font-size: 0.9rem;
             cursor: pointer;
             border-radius: 6px;
-            transition: background-color 0.2s;
         }
-        .settings-btn:hover {
-            background-color: #1a5296;
-        }
+        .settings-btn:hover { background-color: #1a5296; }
+        
         .pause-btn {
-            background-color: var(--primary);
-            border: 1px solid var(--border);
+            background-color: #333;
+            border: none;
             color: var(--text);
             margin-top: 15px;
             width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .pause-btn:hover {
-            background-color: #f39c12;
-            border-color: #f39c12;
+        .pause-btn:hover { background-color: #444; }
+
+        /* Dark overlay blur when paused */
+        .paused-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.92);
+            border-radius: 15px;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
+        
+        .pause-icon-svg {
+            width: 80px;
+            height: 80px;
+            fill: var(--accent);
+            cursor: pointer;
+            filter: drop-shadow(0 0 10px rgba(233, 69, 96, 0.6));
+            transition: transform 0.2s;
+        }
+        .pause-icon-svg:hover { transform: scale(1.1); }
+
         .settings-modal {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: var(--card-bg);
-            padding: 30px;
+            background-color: #111a2e;
+            padding: 25px;
             border-radius: 12px;
-            border: 1px solid var(--accent);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
             z-index: 100;
             width: 85%;
             max-width: 400px;
             text-align: left;
         }
-        .setting-group {
-            margin-bottom: 20px;
-        }
+        .setting-group { margin-bottom: 20px; }
         .setting-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
-            color: var(--text);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
-        .setting-group select, .setting-group input {
+        .setting-group select {
             width: 100%;
             padding: 10px;
             border-radius: 6px;
-            border: 1px solid var(--border);
+            border: 1px solid #333;
             background-color: var(--bg);
             color: var(--text);
             box-sizing: border-box;
+            font-size: 0.95rem;
         }
         .overlay {
             position: fixed;
@@ -145,61 +162,56 @@
             background-color: var(--primary);
             color: var(--text);
             border: none;
-            padding: 14px;
-            font-size: 1.2rem;
+            padding: 15px;
+            font-size: 1.4rem;
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.2s, transform 0.1s;
         }
-        button:hover {
-            background-color: #1a5296;
+        button:hover { background-color: #1a5296; }
+        button.correct {
+            background-color: var(--correct) !important;
+            color: #000 !important;
+            font-weight: bold;
         }
-        button:active {
-            transform: scale(0.98);
-        }
-        .btn-correct {
-            background-color: #2ecc71 !important;
+        button.wrong {
+            background-color: var(--wrong) !important;
             color: #fff !important;
         }
-        .btn-wrong {
-            background-color: #e74c3c !important;
-            color: #fff !important;
-        }
-        .hidden { display: none; }
-        .game-over h1 { font-size: 2.8rem; margin-bottom: 10px; color: #fff; }
-        .game-over p { font-size: 1.2rem; margin-bottom: 25px; color: #ddd; }
+
+        .hidden { display: none !important; }
+        .game-over h1 { font-size: 3rem; margin-bottom: 10px; }
+        .game-over p { font-size: 1.3rem; margin-bottom: 25px; }
+        
         .btn-large {
             background-color: var(--accent);
-            padding: 14px 30px;
+            padding: 15px 30px;
             font-size: 1.1rem;
             font-weight: bold;
             width: 100%;
             margin-top: 10px;
         }
         .btn-large:hover { background-color: #d13d56; }
-        .difficulty-desc {
-            font-size: 0.85rem;
-            color: #aaa;
-            margin-top: 5px;
-            line-height: 1.4;
+        .btn-secondary {
+            background-color: #333;
+            margin-top: 10px;
+            width: 100%;
+            font-size: 1rem;
         }
+        .btn-secondary:hover { background-color: #444; }
+
         .version-marker {
             position: fixed;
             bottom: 10px;
             right: 15px;
             font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.4);
-            pointer-events: none;
-        }
-        .paused-dim {
-            filter: brightness(0.08);
-            transition: filter 0.2s ease;
+            color: #666;
+            font-weight: bold;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
-
-<div class="version-marker">v1.0.5</div>
 
 <div class="top-btns">
     <button class="settings-btn" onclick="openSettings()" id="settings-trigger">⚙️ Settings</button>
@@ -207,67 +219,67 @@
 
 <div class="overlay hidden" id="overlay"></div>
 <div class="settings-modal hidden" id="settings-modal">
-    <h2 style="margin-top:0; color:var(--accent);">Settings</h2>
-    <div class="setting-group">
-        <label for="modal-diff">Difficulty Level (1 - 5):</label>
-        <select id="modal-diff" onchange="updateModalDiffDesc()">
-            <option value="1">Level 1 (Easiest - 10s Timer)</option>
-            <option value="2">Level 2 (8.5s Timer)</option>
-            <option value="3" selected>Level 3 (7s Timer)</option>
-            <option value="4">Level 4 (5.5s Timer)</option>
-            <option value="5">Level 5 (Hardest - 4s Timer)</option>
-        </select>
-        <div class="difficulty-desc" id="modal-diff-desc">Easier is the best for training, and harder is the best for practicing</div>
-    </div>
-    <button class="btn-large" onclick="saveModalSettings()">Save & Close</button>
+    <h3 style="margin-top:0;">Settings</h3>
+    <p style="font-size: 0.9rem; color: #aaa;">Character failure weights automatically reset on every new session.</p>
+    <button class="btn-large" onclick="closeSettings()">Close</button>
 </div>
 
 <!-- Main Menu Screen -->
 <div class="container" id="menu-screen">
-    <h1 style="font-size: 2.2rem; margin-top:0; color: #fff;">Hiragana Trainer</h1>
-    <p style="color: #aaa; margin-bottom: 20px;">Master basic hiragana with 100 rapid-fire questions, 6 choices, and adaptive repetition.</p>
-    
+    <h1 style="font-size: 2.2rem; margin-top: 0;">Hiragana Trainer</h1>
+    <p style="color: #aaa; margin-bottom: 20px;">Fast-paced adaptive flashcards across 100 questions.</p>
+
     <div class="setting-group" style="text-align: left;">
-        <label for="menu-group">Select Character Set:</label>
-        <select id="menu-group">
-            <option value="all">All 46 Basic Hiragana</option>
-            <option value="vowels">Vowels only (a, i, u, e, o)</option>
-            <option value="k">K-Group (ka, ki, ku, ke, ko)</option>
-            <option value="s">S-Group (sa, shi, su, se, so)</option>
-            <option value="t">T-Group (ta, chi, tsu, te, to)</option>
-            <option value="n">N-Group (na, ni, nu, ne, no)</option>
-            <option value="h">H-Group (ha, hi, fu, he, ho)</option>
-            <option value="m">M-Group (ma, mi, mu, me, mo)</option>
-            <option value="y">Y-Group (ya, yu, yo)</option>
-            <option value="r">R-Group (ra, ri, ru, re, ro)</option>
-            <option value="w">W/N-Group (wa, wo, n)</option>
+        <label for="set-select">Select Character Set:</label>
+        <select id="set-select">
+            <option value="all">ALL (Basic 46 Characters)</option>
+            <option value="a">a, i, u, e, o (あ, い, う, え, お)</option>
+            <option value="ka">ka, ki, ku, ke, ko (か, き, く, け, こ)</option>
+            <option value="sa">sa, shi, su, se, so (さ, し, す, せ, そ)</option>
+            <option value="ta">ta, chi, tsu, te, to (た, ち, つ, て, と)</option>
+            <option value="na">na, ni, nu, ne, no (な, に, ぬ, ね, の)</option>
+            <option value="ha">ha, hi, fu, he, ho (は, ひ, ふ, へ, ほ)</option>
+            <option value="ma">ma, mi, mu, me, mo (ま, み, む, め, も)</option>
+            <option value="ya">ya, yu, yo (や, ゆ, よ)</option>
+            <option value="ra">ra, ri, ru, re, ro (ら, り, る, れ, ろ)</option>
+            <option value="wa">wa, wo, n (わ, を, ん)</option>
         </select>
     </div>
 
     <div class="setting-group" style="text-align: left;">
-        <label for="menu-diff">Select Difficulty:</label>
-        <select id="menu-diff" onchange="updateMenuDiffDesc()">
-            <option value="1">Level 1 (Easiest - 10s Timer)</option>
-            <option value="2">Level 2 (8.5s Timer)</option>
-            <option value="3" selected>Level 3 (7s Timer)</option>
-            <option value="4">Level 4 (5.5s Timer)</option>
-            <option value="5">Level 5 (Hardest - 4s Timer)</option>
+        <label for="diff-select">Select Difficulty:</label>
+        <select id="diff-select">
+            <option value="1">Level 1 (Easiest - 10s Timer, +1 Fail Weight)</option>
+            <option value="2">Level 2 (8s Timer, +2 Fail Weight)</option>
+            <option value="3">Level 3 (6s Timer, +3 Fail Weight)</option>
+            <option value="4">Level 4 (5s Timer, +4 Fail Weight)</option>
+            <option value="5">Level 5 (Hardest - 4s Timer, +5 Fail Weight)</option>
         </select>
-        <div class="difficulty-desc" id="menu-diff-desc">Easier is the best for training, and harder is the best for practicing</div>
+        <p id="diff-desc" style="font-size: 0.85rem; color: #888; margin-top: 5px;">
+            Easier is best for training, harder is best for practicing.
+        </p>
     </div>
 
     <button class="btn-large" onclick="startNewGame()">Start Training</button>
-    <button class="btn-large hidden" id="load-btn" onclick="loadSavedSession()" style="background-color: var(--primary); border: 1px solid var(--border);">📂 Resume Saved Session</button>
+    <button class="btn-secondary hidden" id="load-btn" onclick="loadSavedSession()">📂 Resume Saved Session</button>
 </div>
 
 <!-- Countdown Screen -->
 <div class="container hidden" id="countdown-screen">
-    <h2 style="color:var(--accent);">Get Ready...</h2>
+    <h2>Get Ready...</h2>
     <div class="character-display" id="countdown-num">3</div>
 </div>
 
-<!-- Game Screen -->
+<!-- Main Game Screen -->
 <div class="container hidden" id="game-screen">
+    <!-- Paused dark overlay -->
+    <div class="paused-overlay hidden" id="paused-overlay" onclick="togglePause()">
+        <svg class="pause-icon-svg" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+        </svg>
+        <p style="color: #fff; font-size: 1.2rem; margin-top: 15px;">PAUSED (Click to Resume)</p>
+    </div>
+
     <div class="header">
         <span id="question-tracker">Q: 1/100</span>
         <span id="score-tracker">Score: 0</span>
@@ -275,132 +287,91 @@
     <div class="timer-bar">
         <div class="timer-fill" id="timer-bar-fill"></div>
     </div>
-    <div style="position: relative;">
-        <div id="game-content-area">
-            <div class="character-display" id="character">あ</div>
-            <div class="options-grid" id="options"></div>
-        </div>
-        <div id="pause-vector-overlay" class="hidden" style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); z-index: 20; pointer-events: none;">
-            <svg width="90" height="90" viewBox="0 0 24 24" fill="#ffffff" style="filter: drop-shadow(0 0 10px rgba(233,69,96,0.8));">
-                <rect x="6" y="4" width="4" height="16" rx="1"/>
-                <rect x="14" y="4" width="4" height="16" rx="1"/>
-            </svg>
-        </div>
-    </div>
-    <button class="pause-btn" id="pause-btn" onclick="togglePause()">Pause</button>
+    <div class="character-display" id="character">あ</div>
+    <div class="options-grid" id="options"></div>
+    
+    <button class="pause-btn" id="pause-btn" onclick="togglePause()">
+        Pause Session
+    </button>
 </div>
 
 <!-- Result Screen -->
 <div class="container hidden" id="result-screen">
     <div class="game-over">
-        <h1>Session Complete!</h1>
+        <h1>Session Done!</h1>
         <p id="final-score">You scored: 0 / 100</p>
         <button class="btn-large" onclick="startNewGame()">Retake Test</button>
-        <button class="btn-large" onclick="returnToMenu()" style="background-color: var(--primary); border: 1px solid var(--border);">Main Menu</button>
+        <button class="btn-secondary" onclick="returnToMenu()">Main Menu</button>
     </div>
 </div>
 
-<script>
-    const baseHiraganaMap = [
-        {h:"あ",r:"a"},{h:"い",r:"i"},{h:"う",r:"u"},{h:"え",r:"e"},{h:"お",r:"o"},
-        {h:"か",r:"ka"},{h:"き",r:"ki"},{h:"く",r:"ku"},{h:"け",r:"ke"},{h:"こ",r:"ko"},
-        {h:"さ",r:"sa"},{h:"し",r:"shi"},{h:"す",r:"su"},{h:"せ",r:"se"},{h:"そ",r:"so"},
-        {h:"た",r:"ta"},{h:"ち",r:"chi"},{h:"つ",r:"tsu"},{h:"て",r:"te"},{h:"と",r:"to"},
-        {h:"な",r:"na"},{h:"に",r:"ni"},{h:"ぬ",r:"nu"},{h:"ね",r:"ne"},{h:"の",r:"no"},
-        {h:"は",r:"ha"},{h:"ひ",r:"hi"},{h:"ふ",r:"fu"},{h:"へ",r:"he"},{h:"ほ",r:"ho"},
-        {h:"ま",r:"ma"},{h:"み",r:"mi"},{h:"む",r:"mu"},{h:"め",r:"me"},{h:"も",r:"mo"},
-        {h:"や",r:"ya"},{h:"ゆ",r:"yu"},{h:"よ",r:"yo"},
-        {h:"ら",r:"ra"},{h:"り",r:"ri"},{h:"る",r:"ru"},{h:"れ",r:"re"},{h:"ろ",r:"ro"},
-        {h:"わ",r:"wa"},{h:"を",r:"wo"},{h:"ん",r:"n"}
-    ];
+<div class="version-marker">v1.0.7</div>
 
+<script>
     const hiraganaGroups = {
-        all: baseHiraganaMap,
-        vowels: baseHiraganaMap.slice(0, 5),
-        k: baseHiraganaMap.slice(5, 10),
-        s: baseHiraganaMap.slice(10, 15),
-        t: baseHiraganaMap.slice(15, 20),
-        n: baseHiraganaMap.slice(20, 25),
-        h: baseHiraganaMap.slice(25, 30),
-        m: baseHiraganaMap.slice(30, 35),
-        y: baseHiraganaMap.slice(35, 38),
-        r: baseHiraganaMap.slice(38, 43),
-        w: baseHiraganaMap.slice(43, 46)
+        all: [
+            {h:"あ",r:"a"},{h:"い",r:"i"},{h:"う",r:"u"},{h:"え",r:"e"},{h:"お",r:"o"},
+            {h:"か",r:"ka"},{h:"き",r:"ki"},{h:"く",r:"ku"},{h:"け",r:"ke"},{h:"こ",r:"ko"},
+            {h:"さ",r:"sa"},{h:"し",r:"shi"},{h:"す",r:"su"},{h:"せ",r:"se"},{h:"そ",r:"so"},
+            {h:"た",r:"ta"},{h:"ち",r:"chi"},{h:"つ",r:"tsu"},{h:"て",r:"te"},{h:"と",r:"to"},
+            {h:"な",r:"na"},{h:"に",r:"ni"},{h:"ぬ",r:"nu"},{h:"ね",r:"ne"},{h:"の",r:"no"},
+            {h:"は",r:"ha"},{h:"ひ",r:"hi"},{h:"ふ",r:"fu"},{h:"へ",r:"he"},{h:"ほ",r:"ho"},
+            {h:"ま",r:"ma"},{h:"み",r:"mi"},{h:"む",r:"mu"},{h:"め",r:"me"},{h:"も",r:"mo"},
+            {h:"や",r:"ya"},{h:"ゆ",r:"yu"},{h:"よ",r:"yo"},
+            {h:"ら",r:"ra"},{h:"り",r:"ri"},{h:"る",r:"ru"},{h:"れ",r:"re"},{h:"ろ",r:"ro"},
+            {h:"わ",r:"wa"},{h:"を",r:"wo"},{h:"ん",r:"n"}
+        ],
+        a: [{h:"あ",r:"a"},{h:"い",r:"i"},{h:"う",r:"u"},{h:"え",r:"e"},{h:"お",r:"o"}],
+        ka: [{h:"か",r:"ka"},{h:"き",r:"ki"},{h:"く",r:"ku"},{h:"け",r:"ke"},{h:"こ",r:"ko"}],
+        sa: [{h:"さ",r:"sa"},{h:"し",r:"shi"},{h:"す",r:"su"},{h:"せ",r:"se"},{h:"そ",r:"so"}],
+        ta: [{h:"た",r:"ta"},{h:"ち",r:"chi"},{h:"つ",r:"tsu"},{h:"て",r:"te"},{h:"と",r:"to"}],
+        na: [{h:"な",r:"na"},{h:"に",r:"ni"},{h:"ぬ",r:"nu"},{h:"ね",r:"ne"},{h:"の",r:"no"}],
+        ha: [{h:"は",r:"ha"},{h:"ひ",r:"hi"},{h:"ふ",r:"fu"},{h:"へ",r:"he"},{h:"ほ",r:"ho"}],
+        ma: [{h:"ま",r:"ma"},{h:"み",r:"mi"},{h:"む",r:"mu"},{h:"め",r:"me"},{h:"も",r:"mo"}],
+        ya: [{h:"や",r:"ya"},{h:"ゆ",r:"yu"},{h:"よ",r:"yo"}],
+        ra: [{h:"ら",r:"ra"},{h:"り",r:"ri"},{h:"る",r:"ru"},{h:"れ",r:"re"},{h:"ろ",r:"ro"}],
+        wa: [{h:"わ",r:"wa"},{h:"を",r:"wo"},{h:"ん",r:"n"}]
     };
 
     const TOTAL_QUESTIONS = 100;
     
-    let activeHiraganaPool = [];
+    let activeCharPool = [];
+    let characterWeights = {};
     let currentQuestionIndex = 0;
     let score = 0;
     let questions = [];
     let timerInterval;
     let startTime;
-    let difficultyLevel = 3;
-    let timeLimitMs = 7000;
-    let isPaused = false;
-    let pausedTimeRemaining = 0;
-    let isAnsweringLocked = false;
+    let timeLimitMs = 4000;
+    let difficultyLevel = 1;
     let selectedGroupKey = 'all';
-
-    const diffTimers = {
-        1: 10000,
-        2: 8500,
-        3: 7000,
-        4: 5500,
-        5: 4000
-    };
+    let isPaused = false;
+    let isAnsweringLocked = false;
+    let pausedTimeRemaining = 0;
 
     window.onload = function() {
-        loadWeightsFromStorage();
         const saved = localStorage.getItem('kaito_hiragana_save');
         if (saved) {
             document.getElementById('load-btn').classList.remove('hidden');
         }
     };
 
-    function loadWeightsFromStorage() {
-        const savedWeights = localStorage.getItem('kaito_hiragana_weights');
-        let weightsMap = savedWeights ? JSON.parse(savedWeights) : {};
-        
-        activeHiraganaPool = hiraganaGroups[selectedGroupKey].map(item => ({
-            ...item,
-            weight: weightsMap[item.h] || 1
-        }));
-    }
-
-    function saveWeightsToStorage() {
-        const savedWeights = localStorage.getItem('kaito_hiragana_weights');
-        let weightsMap = savedWeights ? JSON.parse(savedWeights) : {};
-        activeHiraganaPool.forEach(item => {
-            weightsMap[item.h] = item.weight;
+    function resetAllWeightsLocally() {
+        characterWeights = {};
+        activeCharPool.forEach(item => {
+            characterWeights[item.h] = 1;
         });
-        localStorage.setItem('kaito_hiragana_weights', JSON.stringify(weightsMap));
-    }
-
-    function updateMenuDiffDesc() {
-        const val = document.getElementById('menu-diff').value;
-        document.getElementById('menu-diff-desc').innerText = "Easier is the best for training, and harder is the best for practicing (Difficulty " + val + "/5)";
-    }
-
-    function updateModalDiffDesc() {
-        const val = document.getElementById('modal-diff').value;
-        document.getElementById('modal-diff-desc').innerText = "Easier is the best for training, and harder is the best for practicing (Difficulty " + val + "/5)";
     }
 
     function openSettings() {
         if (!document.getElementById('game-screen').classList.contains('hidden') && !isPaused) {
             togglePause();
         }
-        document.getElementById('modal-diff').value = difficultyLevel;
-        updateModalDiffDesc();
         document.getElementById('overlay').classList.remove('hidden');
         document.getElementById('settings-modal').classList.remove('hidden');
     }
 
-    function saveModalSettings() {
-        difficultyLevel = parseInt(document.getElementById('modal-diff').value);
-        timeLimitMs = diffTimers[difficultyLevel];
+    function closeSettings() {
         document.getElementById('overlay').classList.add('hidden');
         document.getElementById('settings-modal').classList.add('hidden');
     }
@@ -408,27 +379,18 @@
     function togglePause() {
         if (isAnsweringLocked) return;
         isPaused = !isPaused;
-        const btn = document.getElementById('pause-btn');
-        const settingsTrigger = document.getElementById('settings-trigger');
-        const contentArea = document.getElementById('game-content-area');
-        const pauseOverlay = document.getElementById('pause-vector-overlay');
+        const pausedOverlay = document.getElementById('paused-overlay');
         
         if (isPaused) {
             clearInterval(timerInterval);
             let elapsedTime = Date.now() - startTime;
             pausedTimeRemaining = timeLimitMs - elapsedTime;
-            btn.innerText = "Resume";
+            pausedOverlay.classList.remove('hidden');
             document.getElementById('options').style.pointerEvents = 'none';
-            contentArea.classList.add('paused-dim');
-            pauseOverlay.classList.remove('hidden');
-            settingsTrigger.style.display = 'block';
             saveProgressToStorage();
         } else {
-            btn.innerText = "Pause";
+            pausedOverlay.classList.add('hidden');
             document.getElementById('options').style.pointerEvents = 'auto';
-            contentArea.classList.remove('paused-dim');
-            pauseOverlay.classList.add('hidden');
-            settingsTrigger.style.display = 'none';
             resumeTimer();
         }
     }
@@ -439,7 +401,6 @@
         document.getElementById('result-screen').classList.add('hidden');
         document.getElementById('countdown-screen').classList.add('hidden');
         document.getElementById('menu-screen').classList.remove('hidden');
-        document.getElementById('settings-trigger').style.display = 'block';
 
         const saved = localStorage.getItem('kaito_hiragana_save');
         if (saved) {
@@ -450,34 +411,40 @@
     }
 
     function getWeightedRandomChar() {
-        let totalWeight = activeHiraganaPool.reduce((sum, item) => sum + item.weight, 0);
+        let totalWeight = 0;
+        activeCharPool.forEach(item => {
+            totalWeight += (characterWeights[item.h] || 1);
+        });
+
         let randomVal = Math.random() * totalWeight;
-        let currentSum = 0;
-        for (let item of activeHiraganaPool) {
-            currentSum += item.weight;
-            if (randomVal <= currentSum) {
-                return item;
-            }
+        for (let item of activeCharPool) {
+            let w = (characterWeights[item.h] || 1);
+            if (randomVal < w) return item;
+            randomVal -= w;
         }
-        return activeHiraganaPool[0];
+        return activeCharPool[0];
     }
 
     function startNewGame() {
-        difficultyLevel = parseInt(document.getElementById('menu-diff').value);
-        timeLimitMs = diffTimers[difficultyLevel];
-        selectedGroupKey = document.getElementById('menu-group').value;
-
         localStorage.removeItem('kaito_hiragana_save');
         document.getElementById('load-btn').classList.add('hidden');
         document.getElementById('menu-screen').classList.add('hidden');
         
+        selectedGroupKey = document.getElementById('set-select').value;
+        activeCharPool = hiraganaGroups[selectedGroupKey] || hiraganaGroups.all;
+
+        // Reset all weights to 1 on a fresh new session
+        resetAllWeightsLocally();
+
+        difficultyLevel = parseInt(document.getElementById('diff-select').value);
+        const timerSecs = [10, 8, 6, 5, 4][difficultyLevel - 1];
+        timeLimitMs = timerSecs * 1000;
+
         score = 0;
         currentQuestionIndex = 0;
         questions = [];
 
-        loadWeightsFromStorage();
-
-        for(let i = 0; i < TOTAL_QUESTIONS; i++) {
+        for (let i = 0; i < TOTAL_QUESTIONS; i++) {
             questions.push(getWeightedRandomChar());
         }
 
@@ -491,11 +458,12 @@
         score = savedData.score;
         currentQuestionIndex = savedData.index;
         questions = savedData.questions;
-        difficultyLevel = savedData.difficultyLevel || 3;
-        timeLimitMs = diffTimers[difficultyLevel];
+        timeLimitMs = savedData.timeLimitMs;
+        difficultyLevel = savedData.difficultyLevel || 1;
         selectedGroupKey = savedData.selectedGroupKey || 'all';
+        characterWeights = savedData.characterWeights || {};
 
-        loadWeightsFromStorage();
+        activeCharPool = hiraganaGroups[selectedGroupKey] || hiraganaGroups.all;
 
         document.getElementById('menu-screen').classList.add('hidden');
         document.getElementById('load-btn').classList.add('hidden');
@@ -507,8 +475,10 @@
             score: score,
             index: currentQuestionIndex,
             questions: questions,
+            timeLimitMs: timeLimitMs,
             difficultyLevel: difficultyLevel,
-            selectedGroupKey: selectedGroupKey
+            selectedGroupKey: selectedGroupKey,
+            characterWeights: characterWeights
         };
         localStorage.setItem('kaito_hiragana_save', JSON.stringify(saveData));
     }
@@ -517,7 +487,6 @@
         document.getElementById('result-screen').classList.add('hidden');
         document.getElementById('game-screen').classList.add('hidden');
         document.getElementById('countdown-screen').classList.remove('hidden');
-        document.getElementById('settings-trigger').style.display = 'none';
 
         let count = 3;
         const countDisplay = document.getElementById('countdown-num');
@@ -535,7 +504,7 @@
                 document.getElementById('game-screen').classList.remove('hidden');
                 callback();
             }
-        }, 800);
+        }, 700);
     }
 
     function loadQuestion() {
@@ -550,19 +519,18 @@
         pausedTimeRemaining = timeLimitMs;
         isPaused = false;
         isAnsweringLocked = false;
+        document.getElementById('paused-overlay').classList.add('hidden');
         
         const currentData = questions[currentQuestionIndex];
         document.getElementById('character').innerText = currentData.h;
         
-        // Generate choices strictly from activeHiraganaPool (no outside characters)
         let choices = [currentData.r];
-        let poolForWrong = activeHiraganaPool.filter(item => item.r !== currentData.r);
-        poolForWrong.sort(() => Math.random() - 0.5);
+        let numChoicesNeeded = Math.min(6, activeCharPool.length);
 
-        let targetCount = Math.min(6, activeHiraganaPool.length);
-        for (let item of poolForWrong) {
-            if (choices.length < targetCount) {
-                choices.push(item.r);
+        while (choices.length < numChoicesNeeded) {
+            let randomWrong = activeCharPool[Math.floor(Math.random() * activeCharPool.length)].r;
+            if (!choices.includes(randomWrong)) {
+                choices.push(randomWrong);
             }
         }
         
@@ -570,10 +538,12 @@
 
         const optionsDiv = document.getElementById('options');
         optionsDiv.innerHTML = '';
+        optionsDiv.style.pointerEvents = 'auto';
+
         choices.forEach(choice => {
             const btn = document.createElement('button');
             btn.innerText = choice;
-            btn.onclick = () => handleAnswer(choice, currentData);
+            btn.onclick = () => processUserAnswer(btn, choice, currentData);
             optionsDiv.appendChild(btn);
         });
 
@@ -593,40 +563,70 @@
             if (percentageLeft <= 0) {
                 clearInterval(timerInterval);
                 timerBar.style.width = '0%';
-                handleAnswer(null, questions[currentQuestionIndex]); // Timeout counts as wrong
+                handleTimeout();
             } else {
                 timerBar.style.width = percentageLeft + '%';
             }
         }, 30);
     }
 
-    function handleAnswer(selectedChoice, currentData) {
+    function processUserAnswer(selectedBtn, chosenRomaji, currentData) {
         if (isAnsweringLocked) return;
         isAnsweringLocked = true;
         clearInterval(timerInterval);
 
-        const buttons = document.querySelectorAll('#options button');
-        const isCorrect = (selectedChoice === currentData.r);
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.style.pointerEvents = 'none';
 
-        buttons.forEach(btn => {
+        const isCorrect = (chosenRomaji === currentData.r);
+        const allButtons = optionsDiv.querySelectorAll('button');
+
+        allButtons.forEach(btn => {
             if (btn.innerText === currentData.r) {
-                btn.classList.add('btn-correct');
+                btn.classList.add('correct');
             }
-            if (btn.innerText === selectedChoice && !isCorrect) {
-                btn.classList.add('btn-wrong');
-            }
-            btn.style.pointerEvents = 'none';
         });
 
         if (isCorrect) {
             score++;
+            // Reduce weight by 10% on correct answer (min weight 1)
+            let currentW = characterWeights[currentData.h] || 1;
+            characterWeights[currentData.h] = Math.max(1, currentW * 0.9);
         } else {
-            let target = activeHiraganaPool.find(item => item.h === currentData.h);
-            if (target) {
-                target.weight += difficultyLevel;
-                saveWeightsToStorage();
+            selectedBtn.classList.add('wrong');
+            
+            // Increase weight for target character
+            characterWeights[currentData.h] = (characterWeights[currentData.h] || 1) + difficultyLevel;
+
+            // Increase weight for wrong choice clicked
+            const wrongItem = activeCharPool.find(item => item.r === chosenRomaji);
+            if (wrongItem) {
+                characterWeights[wrongItem.h] = (characterWeights[wrongItem.h] || 1) + difficultyLevel;
             }
         }
+
+        setTimeout(() => {
+            currentQuestionIndex++;
+            loadQuestion();
+        }, 500);
+    }
+
+    function handleTimeout() {
+        if (isAnsweringLocked) return;
+        isAnsweringLocked = true;
+
+        const currentData = questions[currentQuestionIndex];
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.style.pointerEvents = 'none';
+
+        const allButtons = optionsDiv.querySelectorAll('button');
+        allButtons.forEach(btn => {
+            if (btn.innerText === currentData.r) {
+                btn.classList.add('correct');
+            }
+        });
+
+        characterWeights[currentData.h] = (characterWeights[currentData.h] || 1) + difficultyLevel;
 
         setTimeout(() => {
             currentQuestionIndex++;
@@ -642,7 +642,6 @@
     function endGame() {
         document.getElementById('game-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
-        document.getElementById('settings-trigger').style.display = 'block';
         document.getElementById('final-score').innerText = `You scored: ${score} / ${TOTAL_QUESTIONS}`;
     }
 </script>
