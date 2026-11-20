@@ -3,15 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kaito | Portfolio</title>
+    <meta name="theme-color" content="#050505">
+    <meta name="description" content="Kaito — Roblox Luau specialist. Scalable, framework-driven gameplay systems: melee, movement, flight, character frameworks.">
+    <title>Kaito | Roblox Luau Specialist — Portfolio</title>
     <link rel="icon" type="image/png" href="favicon.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Pirata+One&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --void: #050505;
             --ink: #0e0d0d;
-            --ink-soft: rgba(15, 15, 15, 0.82);
+            --ink-soft: rgba(15, 15, 15, 0.9);
             --line: rgba(255, 0, 0, 0.15);
             --line-strong: rgba(255, 0, 0, 0.5);
             --blood: #ff1414;
@@ -19,23 +23,46 @@
             --blood-glow: #ff4d4d;
             --bone: #ece8e2;
             --ash: #a3a09b;
-            --ash-dim: #6f6b67;
+            --ash-dim: #8f8b86;      /* was #6f6b67 — 3.67:1 on cards, now 5.3:1 */
+            --bone-dim: #9d9a95;     /* footer/secondary — was #555 (2.73:1) */
             --mono: 'Courier Prime', 'Courier New', monospace;
             --gothic: 'Pirata One', cursive;
+
+            /* Motion tokens — shared so every transition is deliberate */
+            --dur-fast: 0.15s;
+            --dur-base: 0.25s;
+            --dur-slow: 0.4s;
+            --ease-out: cubic-bezier(.2,.7,.2,1);
+            --nav-h: 64px;
         }
 
         * { box-sizing: border-box; }
 
-        html {
-            scroll-behavior: smooth;
+        /* Visually hidden but announced by screen readers */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
 
-        /* ============ BACKGROUND — UNCHANGED ============ */
+        html {
+            scroll-behavior: smooth;
+            /* Keeps sticky nav from covering anchored/focused content (WCAG 2.2 "Focus Not Obscured") */
+            scroll-padding-top: calc(var(--nav-h) + 16px);
+        }
+
+        /* ============ BACKGROUND ============ */
         body {
             font-family: 'Courier Prime', monospace;
             background-color: #050505;
 
-            background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), url('reze-blushing-chainsaw-man-moewalls-com.gif');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.88)), url('reze-blushing-chainsaw-man-moewalls-com.gif');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -44,6 +71,12 @@
             line-height: 1.6;
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* GIF background attachment fixed janks on mobile — pin it to scroll there instead */
+        @media (max-width: 800px) {
+            body { background-attachment: scroll; }
         }
         /* ============ /BACKGROUND ============ */
 
@@ -53,6 +86,25 @@
             padding: 0 20px;
         }
 
+        /* Skip link */
+        .skip-link {
+            position: absolute;
+            left: 12px;
+            top: -60px;
+            z-index: 1100;
+            padding: 10px 16px;
+            background: var(--blood);
+            color: #000;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.8em;
+            text-decoration: none;
+            border-radius: 2px;
+            transition: top var(--dur-base) var(--ease-out);
+        }
+        .skip-link:focus { top: 12px; }
+
         /* Scroll progress */
         .scroll-progress {
             position: fixed;
@@ -60,10 +112,10 @@
             left: 0;
             height: 3px;
             width: 0%;
+            transform-origin: left center;
             background: linear-gradient(90deg, var(--blood-deep), var(--blood), var(--blood-glow));
             box-shadow: 0 0 10px var(--blood);
             z-index: 1000;
-            transition: width 0.1s ease-out;
         }
 
         /* Navigation Bar */
@@ -73,72 +125,76 @@
             z-index: 900;
             display: flex;
             justify-content: center;
-            gap: 34px;
-            padding: 22px 0;
+            gap: 8px;
+            padding: 14px 12px;
             margin-bottom: 40px;
             border-bottom: 1px solid transparent;
             background: transparent;
-            transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, padding 0.3s ease;
+            transition: background-color var(--dur-slow) ease,
+                        border-color var(--dur-slow) ease,
+                        box-shadow var(--dur-slow) ease,
+                        padding var(--dur-slow) ease;
         }
 
         nav.scrolled {
-            background-color: rgba(5, 5, 5, 0.78);
+            background-color: rgba(5, 5, 5, 0.82);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--line);
             box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
-            padding: 14px 0;
+            padding: 8px 12px;
         }
 
         nav a {
             position: relative;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
             color: var(--ash);
             text-decoration: none;
-            font-size: 0.95em;
+            font-size: 0.9em;
             text-transform: uppercase;
             letter-spacing: 2px;
-            padding-bottom: 4px;
+            padding: 10px 14px;          /* expands hit area past the 24px minimum */
+            min-height: 44px;            /* touch target */
+            transition: color var(--dur-base) ease;
         }
 
-        nav a svg { width: 14px; height: 14px; opacity: 0.85; }
+        nav a svg { width: 15px; height: 15px; opacity: 0.9; flex: none; }
 
         nav a::after {
             content: '';
             position: absolute;
-            left: 0;
-            bottom: 0;
+            left: 14px;
+            right: 14px;
+            bottom: 6px;
             height: 1px;
-            width: 0%;
+            width: auto;
+            transform: scaleX(0);
+            transform-origin: left center;
             background: var(--blood);
             box-shadow: 0 0 6px var(--blood-glow);
-            transition: width 0.3s ease;
+            transition: transform var(--dur-base) var(--ease-out);
         }
 
-        nav a:hover {
-            color: var(--blood-glow);
-            text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
-        }
+        nav a:hover { color: var(--blood-glow); }
+        nav a:hover::after,
+        nav a[aria-current="page"]::after { transform: scaleX(1); }
 
-        nav a:hover::after { width: 100%; }
-
-        nav a:focus-visible {
-            outline: 1px solid var(--blood-glow);
-            outline-offset: 4px;
+        /* One consistent, high-contrast focus ring everywhere */
+        a:focus-visible,
+        button:focus-visible {
+            outline: 2px solid var(--blood-glow);
+            outline-offset: 3px;
         }
 
         /* Profile Header */
         header.hero {
             text-align: center;
-            padding: 40px 0 60px;
+            padding: 32px 0 56px;
         }
 
-        .avatar-wrap {
-            display: inline-block;
-            border-radius: 50%;
-        }
+        .avatar-wrap { display: inline-block; border-radius: 50%; }
 
         .avatar {
             width: 100px;
@@ -156,28 +212,36 @@
         }
 
         .subtitle {
-            color: var(--blood);
+            color: var(--blood-glow);
             font-size: 0.9em;
             letter-spacing: 1px;
             margin: 18px 0 0;
-            text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.35);
         }
 
         h1.glitch-title {
             font-family: var(--gothic);
-            color: transparent;
-            -webkit-text-stroke: 1px var(--blood);
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+            color: var(--bone);
+            text-shadow: 0 0 12px rgba(255, 0, 0, 0.75), 0 0 2px rgba(255, 0, 0, 0.9);
             font-size: clamp(3rem, 13vw, 5.5rem);
             letter-spacing: 6px;
+            line-height: 1.1;
             margin: 6px 0 22px 0;
             animation: signFlicker 4s ease-in-out 1.4s 2 both;
+        }
+
+        /* Filled letterforms keep the outline look but stay legible if user-fonts remove text-stroke */
+        @supports (-webkit-text-stroke: 1px red) {
+            h1.glitch-title {
+                color: transparent;
+                -webkit-text-stroke: 1.5px var(--blood);
+            }
         }
 
         h1.glitch-title .gl {
             display: inline-block;
             opacity: 0;
-            animation: letterIn 0.6s cubic-bezier(.2,.8,.2,1) forwards;
+            animation: letterIn 0.6s var(--ease-out) forwards;
         }
         h1.glitch-title .gl:nth-child(1) { animation-delay: 0.05s; }
         h1.glitch-title .gl:nth-child(2) { animation-delay: 0.16s; }
@@ -194,16 +258,16 @@
         @keyframes signFlicker {
             0%, 100% { opacity: 1; }
             92%      { opacity: 1; }
-            94%      { opacity: 0.35; }
+            94%      { opacity: 0.4; }
             96%      { opacity: 1; }
-            97%      { opacity: 0.55; }
+            97%      { opacity: 0.6; }
             98%      { opacity: 1; }
         }
 
         .cursor {
             display: inline-block;
             -webkit-text-stroke: 0;
-            color: var(--blood);
+            color: var(--blood-glow);
             animation: blink 1s steps(1) infinite;
         }
 
@@ -219,16 +283,21 @@
             font-size: 0.95em;
         }
 
+        /* Scroll cue — now a real 44px target */
         .scroll-cue {
             display: inline-flex;
-            margin-top: 42px;
-            color: var(--ash-dim);
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            margin-top: 34px;
+            color: var(--bone-dim);
+            border-radius: 50%;
+            transition: color var(--dur-base) ease;
         }
         .scroll-cue svg { width: 22px; height: 22px; }
         .scroll-cue:hover { color: var(--blood-glow); }
-        .scroll-cue.in-view {
-            animation: bob 2.2s ease-in-out 0.7s infinite;
-        }
+        .scroll-cue.in-view { animation: bob 2.2s ease-in-out 0.7s infinite; }
 
         @keyframes bob {
             0%, 100% { transform: translateY(0); }
@@ -239,7 +308,7 @@
         .reveal {
             opacity: 0;
             transform: translateY(26px);
-            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(.2,.7,.2,1);
+            transition: opacity 0.7s ease, transform 0.7s var(--ease-out);
         }
         .reveal.in-view {
             opacity: 1;
@@ -262,19 +331,29 @@
             position: relative;
             background-color: var(--ink-soft);
             backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             padding: 26px 26px 24px;
             border-radius: 3px;
             border: 1px solid var(--line);
             margin-bottom: 34px;
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.55);
-            transition: border-color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
-            overflow: hidden;
+            transition: border-color var(--dur-slow) ease, box-shadow var(--dur-slow) ease;
         }
 
-        .project-card:hover {
-            border-color: var(--line-strong);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 24px rgba(255, 0, 0, 0.12);
+        /* Lift on hover only for devices that can hover — prevents sticky hover on touch */
+        @media (hover: hover) and (pointer: fine) {
+            .project-card:hover {
+                border-color: var(--line-strong);
+                transform: translateY(-4px);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 24px rgba(255, 0, 0, 0.12);
+            }
+            .project-card:hover .corner {
+                opacity: 1;
+                border-color: var(--blood);
+                width: 22px;
+                height: 22px;
+            }
+            .project-card:hover .video-container { border-color: var(--line-strong); }
         }
 
         .project-card::after {
@@ -301,24 +380,20 @@
             position: absolute;
             width: 16px;
             height: 16px;
-            border-color: var(--blood-deep);
-            opacity: 0.7;
-            transition: opacity 0.35s ease, border-color 0.35s ease, width 0.35s ease, height 0.35s ease;
+            border-color: #8c1414;
+            opacity: 0.85;
+            transition: opacity var(--dur-slow) ease, border-color var(--dur-slow) ease,
+                        width var(--dur-slow) ease, height var(--dur-slow) ease;
             pointer-events: none;
         }
         .corner.tl { top: 8px; left: 8px; border-top: 1px solid; border-left: 1px solid; }
         .corner.br { bottom: 8px; right: 8px; border-bottom: 1px solid; border-right: 1px solid; }
-        .project-card:hover .corner {
-            opacity: 1;
-            border-color: var(--blood);
-            width: 22px;
-            height: 22px;
-        }
 
         .card-tag {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 12px;
             margin-bottom: 14px;
             font-family: var(--mono);
         }
@@ -330,12 +405,26 @@
         }
 
         .status {
-            font-size: 0.68em;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7em;
             letter-spacing: 1.5px;
-            padding: 3px 9px;
+            text-transform: uppercase;
+            padding: 4px 10px;
             border-radius: 2px;
             border: 1px solid var(--ash-dim);
             color: var(--ash);
+            white-space: nowrap;
+        }
+        /* Dot = shape cue so state is never conveyed by color alone */
+        .status::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            flex: none;
         }
         .status-unstable {
             border-color: var(--blood);
@@ -348,42 +437,51 @@
         }
 
         .project-card h3 {
-            color: var(--blood);
+            color: #ff3131;
             margin: 0 0 12px;
-            font-size: 1.3em;
+            font-size: 1.25em;
             font-family: var(--mono);
             font-weight: 700;
+            line-height: 1.35;
+        }
+
+        /* The aside is no longer inline-styled inside the heading */
+        .project-card h3 .h3-aside {
+            display: block;
+            color: var(--ash-dim);
+            font-size: 0.62em;
+            font-weight: 400;
+            letter-spacing: 0.4px;
+            margin-top: 4px;
+            line-height: 1.5;
         }
 
         .project-card p {
             font-size: 0.9em;
-            color: #bbb;
+            color: #c8c5c0;
             margin: 0 0 12px;
         }
-        .project-card p:last-of-type { margin-bottom: 4px; }
+        .project-card p:last-of-type { margin-bottom: 8px; }
 
         .link-badge {
             display: inline-flex;
             align-items: center;
-            gap: 7px;
-            margin: 4px 0 6px;
-            padding: 6px 13px;
+            gap: 8px;
+            margin: 4px 0 10px;
+            min-height: 40px;
+            padding: 8px 16px;
             border: 1px solid var(--line-strong);
             border-radius: 20px;
             color: var(--blood-glow);
             text-decoration: none;
             font-size: 0.82em;
             letter-spacing: 0.5px;
-            transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+            transition: background-color var(--dur-base) ease, box-shadow var(--dur-base) ease;
         }
-        .link-badge svg { width: 13px; height: 13px; }
+        .link-badge svg { width: 14px; height: 14px; flex: none; }
         .link-badge:hover {
             background-color: rgba(255, 0, 0, 0.12);
             box-shadow: 0 0 14px rgba(255, 0, 0, 0.25);
-        }
-        .link-badge:focus-visible {
-            outline: 1px solid var(--blood-glow);
-            outline-offset: 3px;
         }
 
         /* Video Container */
@@ -395,10 +493,7 @@
             margin-top: 16px;
             border-radius: 3px;
             border: 1px solid #2a2a2a;
-            transition: border-color 0.35s ease;
-        }
-        .project-card:hover .video-container {
-            border-color: var(--line-strong);
+            transition: border-color var(--dur-slow) ease;
         }
 
         .video-container iframe {
@@ -414,148 +509,183 @@
         footer {
             margin-top: 46px;
             text-align: center;
-            font-size: 0.8em;
-            color: #555;
+            font-size: 0.82em;
+            color: var(--bone-dim);
             border-top: 1px solid #1c1c1c;
             padding: 22px 0 48px;
+            text-wrap: balance;
         }
 
-        footer strong { color: var(--blood); }
+        footer p { margin: 0; }
+        footer strong { color: var(--blood-glow); }
 
         /* Accessibility: reduced motion */
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
             *, *::before, *::after {
                 animation-duration: 0.001ms !important;
+                animation-delay: 0s !important;
                 animation-iteration-count: 1 !important;
                 transition-duration: 0.001ms !important;
             }
             .reveal { opacity: 1 !important; transform: none !important; }
+            .scroll-cue.in-view { animation: none !important; }
         }
 
         @media (max-width: 560px) {
-            nav { gap: 20px; }
+            nav { gap: 2px; }
+            nav a { letter-spacing: 1.4px; padding: 10px 9px; font-size: 0.82em; }
+            h1.glitch-title { letter-spacing: 3px; }
             .project-card { padding: 20px 18px; }
+            .card-tag { flex-wrap: wrap; }
         }
     </style>
 </head>
 <body>
 
-    <div class="scroll-progress" id="scrollProgress"></div>
+    <a class="skip-link" href="#projects">Skip to work</a>
 
-    <nav id="siteNav">
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+    <nav id="siteNav" aria-label="Primary">
         <a href="#top">Home</a>
         <a href="#projects">Work</a>
-        <a href="https://github.com/KaitooAnjay" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>
+        <a href="https://github.com/KaitooAnjay" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>
             GitHub
         </a>
     </nav>
 
-    <div class="container" id="top">
+    <main class="container" id="top">
 
         <header class="hero">
             <div class="avatar-wrap reveal">
-                <img src="https://github.com/KaitooAnjay.png" alt="Kaito Avatar" class="avatar">
+                <img src="https://github.com/KaitooAnjay.png" alt="Kaito's GitHub avatar" class="avatar" width="100" height="100">
             </div>
 
             <p class="subtitle reveal">random kid that loves programming</p>
 
-            <h1 class="glitch-title" aria-label="KAITO">
-                <span class="gl">K</span><span class="gl">A</span><span class="gl">I</span><span class="gl">T</span><span class="gl">O</span><span class="cursor" aria-hidden="true">_</span>
+            <h1 class="glitch-title">
+                <span class="sr-only">Kaito</span>
+                <span class="gl" aria-hidden="true">K</span><span class="gl" aria-hidden="true">A</span><span class="gl" aria-hidden="true">I</span><span class="gl" aria-hidden="true">T</span><span class="gl" aria-hidden="true">O</span><span class="cursor" aria-hidden="true">_</span>
             </h1>
 
-            <p class="description reveal">I'm a Roblox Luau Specialist. I can script almost anything in Roblox Luau. Every script I made is scalable, this mean you don't need to rewrite everything when adding new stuff.</p>
+            <p class="description reveal">I'm a Roblox Luau specialist — I can script almost anything in Luau. Every system I build is <strong>scalable</strong>, so you never have to rewrite the whole thing when you add something new.</p>
 
-            <a href="#projects" class="scroll-cue reveal" aria-label="Scroll to projects">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6"/></svg>
+            <a href="#projects" class="scroll-cue reveal" aria-label="Scroll to my work">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
             </a>
         </header>
 
-        <section id="projects">
-            <h2 class="reveal">My Work</h2>
+        <section id="projects" aria-labelledby="projects-heading">
+            <h2 id="projects-heading" class="reveal">My Work</h2>
 
             <article class="project-card reveal">
-                <span class="corner tl"></span><span class="corner br"></span>
+                <span class="corner tl" aria-hidden="true"></span><span class="corner br" aria-hidden="true"></span>
                 <div class="card-tag">
                     <span class="file-id">FILE_01</span>
                     <span class="status status-paused">Paused</span>
                 </div>
                 <h3>Untitled Touhou Game</h3>
-                <p>Every code was written by myself, unless the open sourced package (ProfileService, TopbarUI, Ragdoll, SmoothCamera).</p>
-                <p>This work feature M1, Moveset, Awakening, and Character Framework. Also I made the Flight system. I don't know what to write again here, watch the vid.</p>
-                <p>Remember that the Assets like UI, SFX, VFX, Anim, Build, Mesh, etc are not mine.</p>
-                <p>Video was recorded by my partner xD. The game is Called Untitled Touhou Game (Development is paused).</p>
+                <p>Every line of code was written by me, except for the open-source packages (ProfileService, TopbarUI, Ragdoll, SmoothCamera).</p>
+                <p>This project features M1 combat, movesets, Awakening, and a character framework. I also built the flight system. I don't know what else to write here — watch the video.</p>
+                <p>Heads up: assets like UI, SFX, VFX, animations, builds, and meshes are not mine.</p>
+                <p>Video was recorded by my partner. The game is called <em>Untitled Touhou Game</em>; development is paused.</p>
 
-                <a class="link-badge" href="https://discord.gg/FVzd78Z4vR" target="_blank" rel="noopener">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <a class="link-badge" href="https://discord.gg/FVzd78Z4vR" target="_blank" rel="noopener noreferrer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     Join the Discord
                 </a>
 
                 <div class="video-container">
-                    <iframe allowfullscreen="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" title="Untitled Touhou Game gameplay" src="https://www.youtube.com/embed/D8waQ5EKJOw"></iframe>
+                    <iframe src="https://www.youtube-nocookie.com/embed/D8waQ5EKJOw" title="Untitled Touhou Game — gameplay showcase" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
             </article>
 
             <article class="project-card reveal">
-                <span class="corner tl"></span><span class="corner br"></span>
+                <span class="corner tl" aria-hidden="true"></span><span class="corner br" aria-hidden="true"></span>
                 <div class="card-tag">
                     <span class="file-id">FILE_02</span>
                     <span class="status status-unstable">Unstable</span>
                 </div>
-                <h3>Soccer <span style="color:var(--ash-dim); font-size:0.7em;">(might delete this soon bcs so laggy, i got GT 730 💔)</span></h3>
-                <p>I made the basic mechanics like M1/Kick, Tackle, Rainbow Flick, Dribble, QTE Run, Client Replication, and Character Framework by myself. The Assets like VFX, SFX, Animation, Build, Mesh, and UIs are not mine.</p>
-                <p>This is not Universal Soccer Gameplay Sneak peek btw, I already changed a lot, and I won't upload Universal Soccer here.</p>
+                <h3>
+                    Soccer
+                    <span class="h3-aside">Might delete this soon — running a GT 730, so it's laggy 💔</span>
+                </h3>
+                <p>I made the core mechanics myself: M1/Kick, Tackle, Rainbow Flick, Dribble, QTE Run, client replication, and a character framework. Assets like VFX, SFX, animations, builds, meshes, and UIs are not mine.</p>
+                <p>This is <em>not</em> a Universal Soccer gameplay sneak peek — I've changed a lot since, and I won't be uploading Universal Soccer here.</p>
 
-                <a class="link-badge" href="https://discord.gg/tbXwVMeyFK" target="_blank" rel="noopener">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <a class="link-badge" href="https://discord.gg/tbXwVMeyFK" target="_blank" rel="noopener noreferrer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     What is Universal Soccer?
                 </a>
 
                 <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/D7soxBTXrVg" title="Soccer Game Mechanics" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                    <iframe src="https://www.youtube-nocookie.com/embed/D7soxBTXrVg" title="Soccer game mechanics — showcase" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
             </article>
         </section>
 
         <footer class="reveal">
-            <p>⚠️ <strong>Disclaimer:</strong> This portfolio webpage's creation was assisted by AI because I'm not even a frontend programmer 😭✌</p>
+            <p><span aria-hidden="true">⚠️ </span><strong>Disclaimer:</strong> this portfolio's implementation was assisted by AI — I'm not a frontend programmer.</p>
         </footer>
-    </div>
+    </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Scroll-triggered reveals — elements fade in on enter, fade out on exit,
-            // and keep re-triggering both ways as the user scrolls up or down.
-            var revealEls = document.querySelectorAll('.reveal');
-            var observer = new IntersectionObserver(function (entries) {
-                entries.forEach(function (entry) {
-                    entry.target.classList.toggle('in-view', entry.isIntersecting);
-                });
-            }, { threshold: 0.15 });
-            revealEls.forEach(function (el) { observer.observe(el); });
+        (function () {
+            'use strict';
 
-            // Sticky nav + scroll progress
             var nav = document.getElementById('siteNav');
             var progressBar = document.getElementById('scrollProgress');
 
-            function onScroll() {
-                if (window.scrollY > 60) {
-                    nav.classList.add('scrolled');
-                } else {
-                    nav.classList.remove('scrolled');
-                }
-
+            // Sticky nav + scroll progress, batched into one rAF per frame.
+            var ticking = false;
+            function update() {
+                ticking = false;
                 var docEl = document.documentElement;
-                var scrollTop = docEl.scrollTop || document.body.scrollTop;
-                var scrollHeight = (docEl.scrollHeight || document.body.scrollHeight) - docEl.clientHeight;
-                var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
-                progressBar.style.width = pct + '%';
-            }
+                var scrollTop = window.scrollY || docEl.scrollTop || 0;
+                nav.classList.toggle('scrolled', scrollTop > 60);
 
-            window.addEventListener('scroll', onScroll, { passive: true });
-            onScroll();
-        });
+                var max = (docEl.scrollHeight || 0) - docEl.clientHeight;
+                var pct = max > 0 ? Math.min(100, (scrollTop / max) * 100) : 0;
+                progressBar.style.transform = 'scaleX(' + (pct / 100) + ')';
+            }
+            function requestUpdate() {
+                if (!ticking) { ticking = true; requestAnimationFrame(update); }
+            }
+            window.addEventListener('scroll', requestUpdate, { passive: true });
+            window.addEventListener('resize', requestUpdate, { passive: true });
+            update();
+
+            // Reveal on scroll. Progressive enhancement: without IO, everything stays visible.
+            var revealEls = document.querySelectorAll('.reveal');
+            if ('IntersectionObserver' in window) {
+                var revealObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        entry.target.classList.toggle('in-view', entry.isIntersecting);
+                    });
+                }, { threshold: 0.15 });
+                revealEls.forEach(function (el) { revealObserver.observe(el); });
+
+                // Highlight the nav link matching the section in view
+                var sections = document.querySelectorAll('main section[id], header.hero');
+                var navLinks = nav.querySelectorAll('a[href^="#"]');
+                var navObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (!entry.isIntersecting) return;
+                        var id = entry.target.id;
+                        navLinks.forEach(function (link) {
+                            var match = link.getAttribute('href') === '#' + id;
+                            if (match) { link.setAttribute('aria-current', 'page'); }
+                            else { link.removeAttribute('aria-current'); }
+                        });
+                    });
+                }, { rootMargin: '-45% 0px -45% 0px' });
+                sections.forEach(function (s) { navObserver.observe(s); });
+            } else {
+                revealEls.forEach(function (el) { el.classList.add('in-view'); });
+            }
+        })();
     </script>
 
 </body>
